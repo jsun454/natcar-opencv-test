@@ -1,37 +1,58 @@
 import cv2
 import numpy as np
 
-# Read image
-img = cv2.imread('images/1.jpg', cv2.IMREAD_GRAYSCALE)
+def main():
+    # Read image
+    img = cv2.imread('images/1.jpg', cv2.IMREAD_GRAYSCALE)
 
-# Show original image
-# cv2.imshow('Original Image', img)
+    showOriginal(img)
+    showProcessed(img)
 
-# Show original image after thresholding
-_, img = cv2.threshold(img, 200, 255, cv2.THRESH_BINARY)
-cv2.imshow('Original Image Thresholded', img)
+def showOriginal(img):
+    # Show original image
+    # cv2.imshow('Original Image', img)
 
-# Image processing
-test = img.copy()
+    # Show original image after thresholding
+    thresh = 200
+    _, img = cv2.threshold(img, thresh, 255, cv2.THRESH_BINARY)
+    cv2.imshow('Original Image Thresholded', img)
 
-# 5x5 median filter
-# median_filter = np.ones((5, 5), np.float32) / 25
-# test = cv2.filter2D(test, -1, median_filter)
+def showProcessed(img):
+    # Image processing
 
-# 5x5 bilateral filter
-# test = cv2.bilateralFilter(test, 5, 100, 100)
+    # Threshold image first
+    thresh = 200
+    _, img = cv2.threshold(img, thresh, 255, cv2.THRESH_BINARY)
 
-# 3x3 Scharr filter
-scharr_x = np.uint8(np.absolute(cv2.Sobel(test, cv2.CV_64F, 1, 0, ksize=-1)))
-scharr_y = np.uint8(np.absolute(cv2.Sobel(test, cv2.CV_64F, 0, 1, ksize=-1)))
-test = cv2.addWeighted(scharr_x, 0.5, scharr_y, 0.5, 0)
+    # nxn median filter
+    n = 9
+    median_filter = np.ones((n, n), np.float32) / (n*n)
+    img = cv2.filter2D(img, -1, median_filter)
 
-# Show processed image
-# cv2.imshow('Processed Image', test)
+    # nxn bilateral filter
+    # n = 5
+    # s_sigma = 100 # spatial sigma
+    # i_sigma = 100 # intensity sigma
+    # img = cv2.bilateralFilter(img, n, s_sigma, i_sigma)
 
-# Show processed image after thresholding
-_, test = cv2.threshold(test, 50, 255, cv2.THRESH_BINARY)
+    # nxn Scharr filter
+    n = -1
+    scharr_x = np.uint8(np.absolute(cv2.Sobel(img, cv2.CV_64F, 1, 0, ksize=n)))
+    scharr_y = np.uint8(np.absolute(cv2.Sobel(img, cv2.CV_64F, 0, 1, ksize=n)))
+    img = cv2.addWeighted(scharr_x, 0.5, scharr_y, 0.5, 0)
 
-cv2.imshow('Processed Image Thresholded', test)
+    # Show processed image
+    # cv2.imshow('Processed Image', img)
 
-cv2.waitKey(0)
+    # Show processed image after thresholding
+    thresh = 50
+    _, img = cv2.threshold(img, thresh, 255, cv2.THRESH_BINARY)
+
+    # img = cv2.bitwise_not(img)
+
+    cv2.imshow('Processed Image Thresholded', img)
+
+    cv2.waitKey(0)
+
+if __name__ == '__main__':
+    main()
