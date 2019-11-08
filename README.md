@@ -1,2 +1,2 @@
-# opencv-test
-Test image processing algorithms
+# natcar-opencv-test
+Test image processing algorithms for Natcar
