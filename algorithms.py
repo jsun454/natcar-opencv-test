@@ -2,6 +2,10 @@ import cv2
 import numpy as np
 import os
 
+# Set whether images should be displayed/saved
+show = True
+write = False
+
 def main():
     # Images
     files = [1, 8, 11, 14, 21, 28, 31, 34]
@@ -25,10 +29,12 @@ def showOriginal(img, f):
     # Show original image after thresholding
     thresh = 190
     _, img = cv2.threshold(img, thresh, 255, cv2.THRESH_BINARY)
-    # cv2.imshow('Original Image Thresholded', img)
+    if show:
+        cv2.imshow('Original Image Thresholded', img)
 
     # Save to file
-    cv2.imwrite('output/{}_A.jpg'.format(f), img)
+    if write:
+        cv2.imwrite('output/{}_A.jpg'.format(f), img)
 
 def showProcessed(img, f):
     # Image processing
@@ -37,10 +43,10 @@ def showProcessed(img, f):
     thresh = 200
     _, img = cv2.threshold(img, thresh, 255, cv2.THRESH_BINARY)
 
-    # nxn median filter
+    # nxn mean filter
     n = 9
-    median_filter = np.ones((n, n), np.float32) / (n*n)
-    img = cv2.filter2D(img, -1, median_filter)
+    mean_filter = np.ones((n, n), np.float32) / (n*n)
+    img = cv2.filter2D(img, -1, mean_filter)
 
     # nxn bilateral filter
     # n = 5
@@ -63,11 +69,27 @@ def showProcessed(img, f):
 
     # img = cv2.bitwise_not(img)
 
-    # cv2.imshow('Processed Image Thresholded', img)
-    # cv2.waitKey(0)
+    # Test morphology
+
+    # Dilation
+    # img = cv2.dilate(img, mean_filter, iterations=3)
+
+    # Erosion
+    # img = cv2.erode(img, mean_filter, iterations=3)
+
+    # Opening
+    # img = cv2.morphologyEx(img, cv2.MORPH_OPEN, mean_filter)
+
+    # Closing
+    img = cv2.morphologyEx(img, cv2.MORPH_CLOSE, mean_filter)
+
+    if show:
+        cv2.imshow('Processed Image Thresholded', img)
+        cv2.waitKey(0)
 
     # Save to file
-    cv2.imwrite('output/{}_B.jpg'.format(f), img)
+    if write:
+        cv2.imwrite('output/{}_B.jpg'.format(f), img)
 
 if __name__ == '__main__':
     main()
