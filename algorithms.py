@@ -1,23 +1,36 @@
 import cv2
 import numpy as np
+import os
 
 def main():
+    # Images
+    files = [1, 8, 11, 14, 21, 28, 31, 34]
+
+    # Make output image directory
+    output_dir = os.path.join(os.getcwd(), 'output')
+    if not os.path.exists(output_dir):
+        os.makedirs(output_dir)
+
     # Read image
-    img = cv2.imread('images/1.jpg', cv2.IMREAD_GRAYSCALE)
+    for f in files:
+        img = cv2.imread('images/{}.jpg'.format(f), cv2.IMREAD_GRAYSCALE)
 
-    showOriginal(img)
-    showProcessed(img)
+        showOriginal(img, f)
+        showProcessed(img, f)
 
-def showOriginal(img):
+def showOriginal(img, f):
     # Show original image
     # cv2.imshow('Original Image', img)
 
     # Show original image after thresholding
-    thresh = 200
+    thresh = 190
     _, img = cv2.threshold(img, thresh, 255, cv2.THRESH_BINARY)
-    cv2.imshow('Original Image Thresholded', img)
+    # cv2.imshow('Original Image Thresholded', img)
 
-def showProcessed(img):
+    # Save to file
+    cv2.imwrite('output/{}_A.jpg'.format(f), img)
+
+def showProcessed(img, f):
     # Image processing
 
     # Threshold image first
@@ -50,9 +63,11 @@ def showProcessed(img):
 
     # img = cv2.bitwise_not(img)
 
-    cv2.imshow('Processed Image Thresholded', img)
+    # cv2.imshow('Processed Image Thresholded', img)
+    # cv2.waitKey(0)
 
-    cv2.waitKey(0)
+    # Save to file
+    cv2.imwrite('output/{}_B.jpg'.format(f), img)
 
 if __name__ == '__main__':
     main()
