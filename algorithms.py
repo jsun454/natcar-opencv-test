@@ -46,7 +46,11 @@ def showProcessed(img, f):
     # nxn mean filter
     n = 9
     mean_filter = np.ones((n, n), np.float32) / (n*n)
-    img = cv2.filter2D(img, -1, mean_filter)
+    # img = cv2.filter2D(img, -1, mean_filter)
+
+    # nxn median filter
+    n = 9
+    img = cv2.medianBlur(img, n)
 
     # nxn bilateral filter
     # n = 5
@@ -71,17 +75,16 @@ def showProcessed(img, f):
 
     # Test morphology
 
-    # Dilation
-    # img = cv2.dilate(img, mean_filter, iterations=3)
-
-    # Erosion
-    # img = cv2.erode(img, mean_filter, iterations=3)
+    # Dilation and erosion w/ n iterations
+    n = 6
+    img = cv2.dilate(img, mean_filter, iterations=n)
+    img = cv2.erode(img, mean_filter, iterations=n)
 
     # Opening
     # img = cv2.morphologyEx(img, cv2.MORPH_OPEN, mean_filter)
 
     # Closing
-    img = cv2.morphologyEx(img, cv2.MORPH_CLOSE, mean_filter)
+    # img = cv2.morphologyEx(img, cv2.MORPH_CLOSE, mean_filter)
 
     if show:
         cv2.imshow('Processed Image Thresholded', img)
