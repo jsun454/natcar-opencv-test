@@ -93,7 +93,7 @@ class PairComparisonUI:
         elif not (self.images_named_properly() or comparison_in_progress):
             self.display_images_named_improperly_dialog()
         else:
-            #creates the side-by-side comparison UI. This code only runs if the user has just changed modes from a different UI
+            # creates the side-by-side comparison UI. This code only runs if the user has just changed modes from a different UI
             if(self.mode != self.SIDE_BY_SIDE_MODE):
                 self.mode = self.SIDE_BY_SIDE_MODE
                 self.clear_ui()
@@ -114,18 +114,18 @@ class PairComparisonUI:
                 self.bottom_frame.grid_columnconfigure(0, weight=1)
                 self.bottom_frame.grid_columnconfigure(1, weight=1)
 
-                #creates the buttons that correspond with each image
+                # creates the buttons that correspond with each image
                 self.left_image_button = Button(self.bottom_frame, width=int(self.master.winfo_screenwidth() / 2), text="Image 1", font=("georgia", 20), fg="black", bg="light gray", command=lambda: self.remove_images())
                 self.left_image_button.grid(row=0, column=0, padx=(20, 10), pady=20)
 
                 self.right_image_button = Button(self.bottom_frame, width=int(self.master.winfo_screenwidth() / 2), text="Image 2", font=("georgia", 20), fg="black", bg="light gray", command=lambda: self.remove_images())
                 self.right_image_button.grid(row=0, column=1, padx=(10, 20), pady=20)
             else:
-                #if the user was already in side-by-side comparison mode, then only the previous set of images needs to be replaced
+                # if the user was already in side-by-side comparison mode, then only the previous set of images needs to be replaced
                 self.left_image_panel.destroy()
                 self.right_image_panel.destroy()
 
-            #loads the next pair of images for comparison
+            # loads the next pair of images for comparison
             self.left_image = ImageTk.PhotoImage(Image.open(self.image_list[0]))
             self.left_image_panel = Label(self.main_frame, image=self.left_image)
             self.left_image_panel.grid(row=1, column=0, padx=(20, 10), pady=(20, 0))
@@ -134,20 +134,20 @@ class PairComparisonUI:
             self.right_image_panel = Label(self.main_frame, image=self.right_image)
             self.right_image_panel.grid(row=1, column=1, padx=(10, 20), pady=(20, 0))
 
-    #takes the user into swap-image comparison. This is called when the user makes an image selection in swap-image mode, in order to ready the next image. It is also called when the user changes modes to swap-image mode. The parameter comparison_in_progress is False when this function is called from the initial mode select screen, but True otherwise since a comparison is in progress. When it is False, which should only happen once per pair comparison, additional segments of code are carried out.
+    # takes the user into swap-image comparison. This is called when the user makes an image selection in swap-image mode, in order to ready the next image. It is also called when the user changes modes to swap-image mode. The parameter comparison_in_progress is False when this function is called from the initial mode select screen, but True otherwise since a comparison is in progress. When it is False, which should only happen once per pair comparison, additional segments of code are carried out.
     def enter_swap_image_mode(self, comparison_in_progress=False):
-        #displays error dialogs if image_list is empty or if image naming convention was not followed
+        # displays error dialogs if image_list is empty or if image naming convention was not followed
         if len(self.image_list) == 0:
             self.display_empty_images_folder_dialog()
         elif not (self.images_named_properly() or comparison_in_progress):
             self.display_images_named_improperly_dialog()
         else:
-            #creates the swap-image comparison UI. This code only runs if the user has just changed modes from a different UI
+            # creates the swap-image comparison UI. This code only runs if the user has just changed modes from a different UI
             if(self.mode != self.SWAP_IMAGE_MODE):
                 self.mode = self.SWAP_IMAGE_MODE
                 self.clear_ui()
 
-                #when this is False, the first image in the image pair is shown. Each time the swap image button is clicked, this boolean swaps between True and False
+                # when this is False, the first image in the image pair is shown. Each time the swap image button is clicked, this boolean swaps between True and False
                 self.show_other_image = False
 
                 self.master.grid_rowconfigure(0, weight=1)
@@ -169,44 +169,44 @@ class PairComparisonUI:
                 self.right_frame.grid_rowconfigure(0, weight=1)
                 self.right_frame.grid_rowconfigure(2, weight=1)
 
-                #when clicked, store that the user chose the image currently being shown
+                # when clicked, store that the user chose the image currently being shown
                 self.choose_image_button = Button(self.bottom_frame, text="Choose this image", font=("georgia", 20), fg="black", bg="light gray", command=lambda: self.remove_images())
                 self.choose_image_button.grid(row=0, column=1, padx=20, pady=20)
 
-                #when clicked, swap which image of the current image pair is being shown
+                # when clicked, swap which image of the current image pair is being shown
                 self.swap_image_button = Button(self.right_frame, text="Swap", font=("georgia", 20), fg="black", bg="light gray", command=self.swap_images)
                 self.swap_image_button.grid(row=1, column=0, padx=20, pady=20)
             else:
-                #if the user was already in swap-image comparison mode, then only the previous shown image needs to be replaced
+                # if the user was already in swap-image comparison mode, then only the previous shown image needs to be replaced
                 self.image_panel.destroy()
 
-            #loads the next shown image
+            # loads the next shown image
             self.shown_image = ImageTk.PhotoImage(Image.open(self.image_list[1 if self.show_other_image else 0]))
             self.image_panel = Label(self.main_frame, image=self.shown_image)
             self.image_panel.grid(row=0, column=0, padx=(20, 0), pady=(20, 0))
 
-    #clears all widgets in the tkinter UI
+    # clears all widgets in the tkinter UI
     def clear_ui(self):
         for item in self.master.grid_slaves():
             item.destroy()
 
-    #closes the program window
+    # closes the program window
     def close_window(self):
         self.master.destroy()
 
-    #displays a pop-up with instructions on how to load and name images
+    # displays a pop-up with instructions on how to load and name images
     def show_instructions(self):
         ctypes.windll.user32.MessageBoxW(None, "Place all images for comparison in the 'output' folder before running the program. Only images using JPEG or PNG file formats may be recognized. Each image must be paired with another image for comparison. Each image pair must share the same root file name (case sensitive), followed by '_A' for the first image and '_B' for the second image (also case sensitive). For example, an image named 'cat_A.png' must be paired with an image named 'cat_B.png'.", "Instructions", 0x00040000 | 0x00000040)
 
-    #displays a error indicating that the images folder is empty
+    # displays a error indicating that the images folder is empty
     def display_empty_images_folder_dialog(self):
         ctypes.windll.user32.MessageBoxW(None, "There are no images in the 'output' folder!", "Error", 0x00040000 | 0x00000030)
 
-    #displays an error indicating that one or more images are named improperly
+    # displays an error indicating that one or more images are named improperly
     def display_images_named_improperly_dialog(self):
         ctypes.windll.user32.MessageBoxW(None, "One or more images in the 'output' folder are named improperly!", "Error", 0x00040000 | 0x00000030)
 
-    #returns whether all images are named properly
+    # returns whether all images are named properly
     def images_named_properly(self):
         for x in range(0, len(self.image_list), 2):
             if x + 1 >= len(self.image_list):
@@ -221,7 +221,7 @@ class PairComparisonUI:
                     return False
         return True
 
-    #swaps the image being shown in swap-image mode
+    # swaps the image being shown in swap-image mode
     def swap_images(self):
         self.show_other_image = not self.show_other_image
         self.enter_swap_image_mode(True)
@@ -232,7 +232,7 @@ class PairComparisonUI:
         self.image_list.pop(0)
         self.image_list.pop(0)
 
-        #saves all the user's choices to an excel file and returns the user to the mode select screen if there are no images left to compare. Otherwise, the user is shown the next pair of images in whatever mode they were in
+        # saves all the user's choices to an excel file and returns the user to the mode select screen if there are no images left to compare. Otherwise, the user is shown the next pair of images in whatever mode they were in
         if len(self.image_list) == 0:
             ctypes.windll.user32.MessageBoxW(None, "Pair comparison complete. Returning to mode select screen.", "Notice", 0x00040000)
             self.start_over()
@@ -241,14 +241,14 @@ class PairComparisonUI:
         elif self.mode == self.SWAP_IMAGE_MODE:
             self.enter_swap_image_mode(True)
 
-    #if the user is in a comparison mode, change to the other comparison mode
+    # if the user is in a comparison mode, change to the other comparison mode
     def change_mode(self):
         if self.mode == self.SIDE_BY_SIDE_MODE:
             self.enter_swap_image_mode(True)
         elif self.mode == self.SWAP_IMAGE_MODE:
             self.enter_side_by_side_mode(True)
 
-    #restarts pair comparison
+    # restarts pair comparison
     def start_over(self):
         os.chdir(os.path.dirname(os.getcwd()))
         self.load_images()
